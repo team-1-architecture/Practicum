@@ -1,7 +1,6 @@
 import {Component, Input, OnInit, SimpleChanges} from '@angular/core';
 import * as leaflet from 'leaflet';
 import 'heatmap.js';
-import { InputFileComponent } from '../input-file/input-file.component';
 
 
 declare const HeatmapOverlay: any;
@@ -52,13 +51,9 @@ export class HeatmapComponent implements OnInit{
       "radius": .001,
       "maxOpacity": .8,
       "scaleRadius": true,
-      // property below responsible for colorization of heat layer
       "useLocalExtrema": true,
-      // here we need to assign property value which represent lat in our data
       latField: 'lat',
-      // here we need to assign property value which represent lng in our data
       lngField: 'lng',
-      // here we need to assign property value which represent valueField in our data
       valueField: 'count'
     };
 

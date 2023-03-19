@@ -1,7 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HttpClient, HttpClientModule, HttpEventType } from '@angular/common/http';
-import { Observable, Subscription } from 'rxjs';
-import { ReadVarExpr } from '@angular/compiler';
 import { Output, EventEmitter } from '@angular/core';
 
 
@@ -38,14 +35,11 @@ export class InputFileComponent implements OnInit{
   uploadDocument() {
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
-      // console.log(fileReader.result);
       console.log(typeof(fileReader.result));
       this.fileData = fileReader.result;
       this.fileDataEvent.emit(this.fileData);
-      // return this.fileData; //Returns the string data
     }
     fileReader.readAsText(this.file);
-    // console.log(this.result);
   }
 
 
@@ -63,19 +57,6 @@ export class InputFileComponent implements OnInit{
      }
      fileReader.readAsText(event.target.files[0]);
   }
-
-
-  // fileContent: any | undefined;
-
-  // public onChange2(fileList: FileList): void {
-  //   // let file = fileList[0];
-  //   // let fileReader: FileReader = new FileReader();
-  //   // let self = this;
-  //   // fileReader.onloadend = function(x) {
-  //   //   this.fileContent = fileReader.result || '';
-  //   // }
-  //   // fileReader.readAsText(file);
-  // }
 
 
 }
