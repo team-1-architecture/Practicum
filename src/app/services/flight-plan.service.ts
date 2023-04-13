@@ -1,0 +1,23 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { FlightPlan } from '../models/flight-plan.model';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class FlightPlanService {
+  
+
+  constructor(private httpClient: HttpClient) {}
+  
+  saveFlightPlan(flightPlan: FlightPlan): Observable<any> {
+    var apiUrl = 'http://127.0.0.1:5000/save_flight_plan';
+    return this.httpClient.post(apiUrl, flightPlan);
+  }
+
+  executeFlightPlan(trigger:boolean): Observable<any> {
+    var apiUrl = 'http://127.0.0.1:5000/set_flight_plan';
+    return this.httpClient.post(apiUrl, trigger);
+  }
+}

@@ -1,10 +1,3 @@
-<h1>{{title}}</h1>
-<nav>
+<!--The content below is only a placeholder and can be replaced.-->
 
-  <button (click)="onLoadInputFile()">Input File</button>
-  <button (click)="onLoadHeatMap()">Heat Map</button>
-  <app-input-file *ngIf="loadInputFile" (fileDataEvent)="setFileData($event)"></app-input-file>
-  <app-heatmap *ngIf="loadHeatMap" [fileData]="fileData"></app-heatmap>
-
-</nav>
-<br>
+<router-outlet></router-outlet>

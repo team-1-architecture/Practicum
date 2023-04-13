@@ -1,0 +1,39 @@
+<div class="content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-plain">
+        <div class="card-header">Google Maps</div>
+        <div style="width: 100%;
+        height: 602px;" class="card-body">
+          <agm-map
+            style="width:100%; height:100%;"
+            (mapReady)="onMapReady($event)"
+            [latitude]="lat"
+            [longitude]="lng"
+            [zoom]="16"
+            (mapClick)="onMapClick($event)"
+          >
+            <agm-marker
+              *ngFor="let marker of markers"
+              [latitude]="marker.lat"
+              [longitude]="marker.lng"
+            ></agm-marker>
+            <agm-polyline [strokeColor]="'blue'" [strokeOpacity]="0.7" [strokeWeight]="3">
+              <agm-polyline-point *ngFor="let marker of markers" [latitude]="marker.lat" [longitude]="marker.lng"></agm-polyline-point>
+            </agm-polyline>
+          </agm-map>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+    <button class="btn btn-danger btn-block" (click)="generateFlightPlan()">Generate Flight Plan</button>
+      </div>
+      <div class="col-md-6">
+    <button class="btn btn-danger btn-block"  (click)="executeFlight()">Execute Flight</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
