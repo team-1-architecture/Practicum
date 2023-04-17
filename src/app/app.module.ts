@@ -14,6 +14,7 @@ import { CommonModule } from "@angular/common";
 import { AppRoutingModule } from "./app-routing.module";
 import { ComponentsModule } from "./components/components.module";
 import  { AgmCoreModule } from '@agm/core';
+import { environment } from "src/environments/environment";
 
 @NgModule({
   imports: [
