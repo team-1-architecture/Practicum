@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FlightPlan , FlightPlanCommand } from '../../models/flight-plan.model'
 import { FlightPlanService } from '../../services/flight-plan.service';
+import { Location } from "src/app/models/location";
+import { MapService } from "src/app/services/map.service";
 
 
 
@@ -11,22 +13,43 @@ import { FlightPlanService } from '../../services/flight-plan.service';
 export class MapComponent implements OnInit {
   lat = 31.75253099985997;
   lng = -106.40242909183934;
+  zoom = 16;
+  isLoading: boolean = false;
+  locations: Location [] = []
 
-  markers: { lat: number; lng: number }[] = [];
+  markers: { lat: number; lng: number; draggable: boolean }[] = [];
 
-  constructor(private flightPlanService: FlightPlanService) {}
+  constructor(private flightPlanService: FlightPlanService,
+                private mapService: MapService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getLocation();
+  }
 
 
  
+  getLocation(){
+    this.mapService.getLocations().subscribe(
+      (locations: Location[]) => {
+        this.locations = locations;
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    );
+  }
+
 
   onMapClick(event: any) {
-    this.markers.push({ lat: event.coords.lat, lng: event.coords.lng });
+    this.markers.push({ lat: event.coords.lat, lng: event.coords.lng, draggable: true });
   }
 
   onMapReady(map: google.maps.Map) {
     
+  }
+
+  onMarkerDragEnd(markerIndex: number, event: any) {
+    this.markers[markerIndex] = { ...this.markers[markerIndex], lat: event.coords.lat, lng: event.coords.lng };
   }
   generateUniqueFlightPlanId(): string {
     const timestamp = new Date().getTime();
@@ -95,13 +118,18 @@ export class MapComponent implements OnInit {
 
     console.log('Flight Plan:', flightPlan);
 
+    this.isLoading = true;
    
     this.flightPlanService.saveFlightPlan(flightPlan).subscribe(
       (response) => {
         console.log('Flight plan saved:', response);
+        this.isLoading = false;
+        this.clearMap();
+
       },
       (error) => {
         console.error('Error saving flight plan:', error);
+        this.isLoading = false;
       }
     );
   }
@@ -115,5 +143,29 @@ export class MapComponent implements OnInit {
         console.error('Error saving flight plan:', error);
       }
     );
+  }
+
+  resetMapCenter() {
+    this.lat = 31.75253099985997;
+    this.lng = -106.40242909183934;
+  }
+  
+  clearMap() {
+    this.markers = [];
+    this.resetMapCenter();
+    this.zoom = 16;
+  }
+
+
+
+
+  onLocationChange(event: any) {
+    const locationId = parseInt(event.target.value);
+    const selectedLocation = this.locations.find(location => location.id === locationId);
+    if (selectedLocation) {
+      this.lat = selectedLocation.latitude;
+      this.lng = selectedLocation.longitude;
+      this.zoom = selectedLocation.zoom;
+    }
   }
 }

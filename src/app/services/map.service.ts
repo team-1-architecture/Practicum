@@ -1,23 +1,26 @@
-// import { Injectable } from '@angular/core';
-// import { Observable } from 'rxjs';
-// import { AgmMap } from '@agm/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Location } from '../models/location';
+import { map, Observable } from 'rxjs';
 
-// @Injectable({
-//   providedIn: 'root',
-// })
-// export class MapService {
-//     subscribeToMapEvent<N extends keyof google.maps.MapHandlerMap<google.maps.Map>>(
-//         map: google.maps.Map,
-//         eventName: N
-//       ): Observable<google.maps.MapMouseEvent> {
-//         return new Observable((observer) => {
-//           const listener = map.addListener(eventName, (event: google.maps.MapMouseEvent) => {
-//             observer.next(event);
-//           });
-      
-//           return () => {
-//             google.maps.event.removeListener(listener);
-//           };
-//         });
-//       }
-//     }
+
+@Injectable({
+  providedIn: 'root',
+})
+
+export class MapService {
+    constructor (private httpClient: HttpClient){} 
+
+    getLocations(): Observable<Location[]> {
+        var apiUrl = 'http://127.0.0.1:5000/get_location';
+        return this.httpClient.get<Location[]>(apiUrl).pipe(
+          map(locations => locations.map(location => ({
+            id: location.id,
+            latitude: location.latitude,
+            longitude: location.longitude,
+            zoom: location.zoom,
+            name: location.name
+          })))
+        );
+      }
+    }
