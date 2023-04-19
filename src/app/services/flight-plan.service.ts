@@ -16,8 +16,8 @@ export class FlightPlanService {
     return this.httpClient.post(apiUrl, flightPlan);
   }
 
-  executeFlightPlan(trigger:boolean): Observable<any> {
-    var apiUrl = 'http://127.0.0.1:5000/set_flight_plan';
-    return this.httpClient.post(apiUrl, trigger);
+  executeFlightPlan(flightPlan: FlightPlan): Observable<any> {
+    var apiUrl = 'http://127.0.0.1:5000/send_flight_plan';
+    return this.httpClient.post(apiUrl, flightPlan);
   }
 }

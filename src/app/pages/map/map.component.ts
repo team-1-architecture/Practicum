@@ -134,16 +134,87 @@ export class MapComponent implements OnInit {
     );
   }
 
-  executeFlight(){
-    this.flightPlanService.executeFlightPlan(true).subscribe(
-      (response:any) => {
-        console.log('Flight plan saved:', response);
+
+
+
+  executeFlight() {
+    const flightPlanCommands: FlightPlanCommand[] = [
+      {
+        waypointId: 0,
+        command: 'takeoff',
+        mavCommand: 22, // MAV_CMD_NAV_TAKEOFF
+        parameters: {
+          altitude: 10,
+        },
       },
-      (error:any) => {
+    ];
+  
+    // ...
+    let waypointId = 1
+    for (const marker of this.markers) {
+      flightPlanCommands.push({
+        waypointId,
+        command: 'waypoint',
+        mavCommand: 16, // MAV_CMD_NAV_WAYPOINT
+        parameters: {
+          latitude: marker.lat,
+          longitude: marker.lng,
+          altitude: 20,
+        },
+      });
+  
+      // ...
+  
+      for (let angle = 0; angle < 360; angle += 10) {
+        flightPlanCommands.push({
+          waypointId,
+          command: 'captureImage',
+          mavCommand: 2000, // Custom command
+          parameters: {},
+        });
+  
+        flightPlanCommands.push({
+          waypointId,
+          command: 'rotate',
+          mavCommand: 115, // MAV_CMD_CONDITION_YAW
+          parameters: {
+            angle: 10,
+          },
+        });
+      }
+  
+      waypointId += 1;
+    }
+  
+
+   
+
+    const flightPlanId = this.generateUniqueFlightPlanId();
+
+    const flightPlan: FlightPlan = {
+      flightPlanId,
+      flightPlan: flightPlanCommands,
+    };
+
+
+    console.log('Flight Plan:', flightPlan);
+
+    this.isLoading = true;
+   
+    this.flightPlanService.executeFlightPlan(flightPlan).subscribe(
+      (response) => {
+        console.log('Flight plan saved:', response);
+        this.isLoading = false;
+        this.clearMap();
+
+      },
+      (error) => {
         console.error('Error saving flight plan:', error);
+        this.isLoading = false;
       }
     );
   }
+
 
   resetMapCenter() {
     this.lat = 31.75253099985997;
